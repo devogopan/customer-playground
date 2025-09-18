@@ -1,0 +1,13 @@
+apiVersion: telemetry.istio.io/v1
+kind: Telemetry
+metadata:
+  name: otel-demo
+  namespace: istio-system
+spec:
+  tracing:
+  - providers:
+    - name: otel-tracing  #extension provider given in meshConfig. Check values.yaml
+    randomSamplingPercentage: 100
+  accessLogging:
+  - providers:
+    - name: otel-als  #extension provider given in meshConfig. Check values.yaml

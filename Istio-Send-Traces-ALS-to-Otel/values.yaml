@@ -1,0 +1,27 @@
+global:
+  meshID: mesh1
+  multiCluster:
+    clusterName: cluster1
+  network: network1
+meshConfig: #Here is config needed
+  defaultConfig:
+    tracing:
+      sampling: 10
+  extensionProviders:
+    - name: otel-tracing
+      opentelemetry:
+        port: 4317
+        service: opentelemetry-collector.observability.svc.cluster.local
+        resource_detectors:
+          environment: {}
+    - name: otel-als
+      envoyOtelAls:
+        service: opentelemetry-collector.observability.svc.cluster.local
+        port: 4317
+  enableTracing: true
+  accessLogFile: /dev/stdout
+  enableEnvoyAccessLogService: true
+pilot:
+  env:
+    PILOT_ENABLE_WORKLOAD_ENTRY_AUTOREGISTRATION: true
+    PILOT_ENABLE_WORKLOAD_ENTRY_HEALTHCHECKS: true

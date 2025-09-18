@@ -1,0 +1,30 @@
+apiVersion: opentelemetry.io/v1alpha1
+kind: OpenTelemetryCollector
+metadata:
+  name: opentelemetry
+  namespace: observability
+spec:
+  mode: deployment
+  image: otel/opentelemetry-collector-contrib:0.135.0
+  config: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+          http:
+    processors:
+      batch: {}
+    exporters:  ## here you can add your custom exporter like Grafana Loki or Tempo
+      debug:
+        verbosity: detailed ## will print to logs of the pod
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [debug]  ## change it to exporter defined under exporters
+        logs:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [debug] ## change it to exporter defined under exporters
+---
