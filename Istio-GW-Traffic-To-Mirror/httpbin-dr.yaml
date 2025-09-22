@@ -1,0 +1,9 @@
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: mirror-dr
+  namespace: istio-system
+spec:
+  host: pod2-apigw.rel.anfaqa.com
+  trafficPolicy:
+    tls: {}

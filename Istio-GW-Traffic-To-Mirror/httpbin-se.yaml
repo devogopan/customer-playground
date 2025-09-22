@@ -1,0 +1,19 @@
+---
+apiVersion: networking.istio.io/v1
+kind: ServiceEntry
+metadata:
+  name: mirror-location
+  namespace: istio-system
+spec:
+  hosts:
+  - "pod2-apigw.rel.anfaqa.com"
+  location: MESH_EXTERNAL
+  ports:
+  - number: 80
+    name: http
+    protocol: HTTP
+  resolution: DNS
+  #resolution: STATIC
+  #endpoints:
+  #- address: 172.18.254.100
+---
