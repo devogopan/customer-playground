@@ -36,10 +36,10 @@ Install Istio base, istiod and gateway using helm in both the clusters.
       --set meshConfig.accessLogFile="/dev/stdout" \
       --wait
       
-    helm install istio-gw-1-26-3 istio/gateway \ 
-    --namespace istio-system --version 1.26.3 \ 
-    --set revision=1-26-3 --set meshConfig.accessLogFile="/dev/stdout" \ 
-    --wait
+    helm install istio-gw-1-26-3 istio/gateway \
+      --namespace istio-system --version 1.26.3 \
+      --set revision=1-26-3 --set meshConfig.accessLogFile="/dev/stdout" \
+      --wait
 
 Check that istiod pods and istio-gw pod is running.
 
