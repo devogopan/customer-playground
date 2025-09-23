@@ -47,7 +47,7 @@ Check that istiod pods and istio-gw pod is running.
 
     kubectl create ns httpbin
     kubectl label ns httpbin istio.io/rev=1-26-3
-    kubectl apply -n httpbin -f https://github.com/istio/istio/blob/master/samples/httpbin/httpbin.yaml
+    kubectl apply -n httpbin -f https://raw.githubusercontent.com/istio/istio/master/samples/httpbin/httpbin.yaml
     
     kubectl apply -f httpbin-gw.yaml
     kubectl apply -f httpbin-vs.yaml
