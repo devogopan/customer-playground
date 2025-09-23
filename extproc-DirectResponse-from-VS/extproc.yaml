@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: extproc-server
+  namespace: httpbin
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: extproc-server
+  namespace: httpbin
+  labels:
+    app: extproc-server
+spec:
+  type: ClusterIP
+  ports:
+  - port: 9000
+    targetPort: 9000
+    protocol: TCP
+    name: grpc
+  selector:
+    app: extproc-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: extproc-server
+  namespace: httpbin
+  labels:
+    app: extproc-server
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: extproc-server
+  template:
+    metadata:
+      labels:
+        app: extproc-server
+    spec:
+      serviceAccountName: extproc-server
+      containers:
+      - name: extproc-server
+        image: devogopan/extproc-server:v1.6
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9000
+          name: grpc
+          protocol: TCP
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+        livenessProbe:
+          tcpSocket:
+            port: 9000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          tcpSocket:
+            port: 9000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          runAsUser: 65532
+          runAsGroup: 65532
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+---

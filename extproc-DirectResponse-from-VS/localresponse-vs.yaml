@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: default-vs
+  namespace: httpbin
+spec:
+  gateways:
+  - httpbin/httpbin-gateway
+  hosts:
+  - pod1-apigw.rel.anfaqa.com
+  http:
+  - directResponse:
+      status: 200
+    match:
+    - method:
+        exact: OPTIONS
+    name: option-call
+  - directResponse:
+      body:
+        string: Route Not Found !!
+      status: 404
+    name: default-route
+    timeout: 30s
