@@ -64,7 +64,7 @@ The root cause is a CVE‑related change in Envoy 1.34 (bundled with Istio 1
 This is a planned change in envoy code for CVE fixes as local reply with ext proc has some edge cases resulted in crash. 
 [Envoy crashes when HTTP ext_proc processes local replies](https://github.com/envoyproxy/envoy/security/advisories/GHSA-cf3q-gqg7-3fm9)
 
-This can be reverted by using the flag mentioned in PR
+This can be reverted by using the flag mentioned in PR. Check the config-map named "cm-to-enable-envoy-feature-flags.yaml" to understand how to enable this
 [\[IMPORTANT\] CVE fix by phlax · Pull Request #38818 · envoyproxy/envoy](https://github.com/envoyproxy/envoy/pull/38818/files)
 
 May be we should be use a dummy svc and workload which will just have a simple response to the “OPTIONS” call and this response will get redirected to ext_proc and come back with correct headers set there.

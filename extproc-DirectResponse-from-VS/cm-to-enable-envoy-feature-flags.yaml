@@ -1,0 +1,34 @@
+apiVersion: v1
+data:
+  mesh: |-
+    accessLogFile: /dev/stdout
+    defaultConfig:
+      discoveryAddress: istiod-1-26-3.istio-system.svc:15012
+      runtimeValues: {"envoy_reloadable_features_skip_ext_proc_on_local_reply":"false"}
+      meshId: mesh1
+    defaultProviders:
+      metrics:
+      - prometheus
+    enablePrometheusMerge: true
+    rootNamespace: istio-system
+    trustDomain: cluster.local
+  meshNetworks: 'networks: {}'
+kind: ConfigMap
+metadata:
+  annotations:
+    meta.helm.sh/release-name: istiod-1-26-3
+    meta.helm.sh/release-namespace: istio-system
+  labels:
+    app.kubernetes.io/instance: istiod-1-26-3
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: istiod
+    app.kubernetes.io/part-of: istio
+    app.kubernetes.io/version: 1.26.3
+    helm.sh/chart: istiod-1.26.3
+    install.operator.istio.io/owning-resource: unknown
+    istio.io/rev: 1-26-3
+    operator.istio.io/component: Pilot
+    release: istiod-1-26-3
+  name: istio-1-26-3
+  namespace: istio-system
+---
