@@ -17,7 +17,7 @@ I have created a golang microservice to work as extproc. Source code, dockerfile
 helm install istio-ingressgateway istio/gateway --namespace httpbin --version 1.22.5 --set revision=1-22-5 --wait
 ```
 4. Install the httpbin-gw.yaml and httpbin-vs.yaml
-5. Install the localresponse-vs.yaml
+5. Install the localresponse-vs.yaml and httpbin-ef.yaml
 6. Install the extproc.yaml
 7. Curl commands
 ```
