@@ -1,0 +1,48 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: py-ws-gateway
+  namespace: istio-system
+spec:
+  selector:
+    app: istio-gw-1-24-2
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - ws.example.local
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: py-ws-vs
+  namespace: istio-system
+spec:
+  hosts:
+  - ws.example.local
+  gateways:
+  - py-ws-gateway
+  http:
+  - name: websocket
+    match:
+    - uri:
+        prefix: /ws
+    route:
+    - destination:
+        host: py-ws-echo.websocket-test.svc.cluster.local
+        port:
+          number: 8080
+    timeout: 100s
+  - name: ui
+    match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: py-ws-echo.websocket-test.svc.cluster.local
+        port:
+          number: 8080
+---
