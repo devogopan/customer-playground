@@ -19,16 +19,14 @@ async def echo(websocket):
         print(f"[close] {peer}")
 
 async def main():
-    # websockets.serve doesn't support path filter directly; use process_request
     async def process_request(path, request_headers):
         if path == PATH:
-            return None  # continue with WS upgrade
+            return None
         if path == '/health':
             return (200, [("Content-Type", "text/plain")], b"healthy\n")
         if path == '/':
             body = b"WS echo server. Connect to /ws.\n"
             return (200, [("Content-Type", "text/plain")], body)
-        # not found
         return (404, [("Content-Type", "text/plain")], b"not found\n")
 
     async with websockets.serve(echo, HOST, PORT, process_request=process_request):
