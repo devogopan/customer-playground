@@ -1,0 +1,17 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: tcp-passthrough
+  namespace: istio-system
+spec:
+  selector:
+    istio: gw-1-24-2
+  servers:
+  - port:
+      number: 1433
+      name: tcp-random
+      protocol: TCP
+    hosts:
+    - "tcphello.example.com"
+---
