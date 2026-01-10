@@ -26,25 +26,32 @@ this is setting up outbound ratelimiting from sleep pod.
 
 1. **Deploy namespace:**
    kubectl apply -f namespace.yaml
-   2. **Deploy Redis and rate limit service:**
+   
+2. **Deploy Redis and rate limit service:**
    kubectl apply -f redis-ratelimit.yaml
-   3. **Deploy httpbin and sidecar:**
+   
+3. **Deploy httpbin and sidecar:**
    
    kubectl apply -f httpbin.yaml
    kubectl apply -f sidecar.yaml
-   4. **Deploy EnvoyFilters:**h
+   
+4. **Deploy EnvoyFilters:**h
    kubectl apply -f envoyfilter-ratelimit-filter.yaml
-   kubectl apply -f envoyfilter-ratelimit-routes.yaml  # Working version
-   # OR
-   kubectl apply -f envoyfilter-ratelimit-routes-problem.yaml  # Problematic version
-   5. **Deploy sleep pod for testing:**
+   
+   kubectl apply -f envoyfilter-ratelimit-routes.yaml
+
+6. **Deploy sleep pod for testing:**
    kubectl apply -f sleep.yaml
-   6. **Wait for pods to be ready:**
-  kubectl wait --for=condition=ready pod -l app=ratelimit -n istio-system --timeout=60s
+   
+7. **Wait for pods to be ready:**
+   kubectl wait --for=condition=ready pod -l app=ratelimit -n istio-system --timeout=60s
+   
    kubectl wait --for=condition=ready pod -l app=redis -n istio-system --timeout=60s
+   
    kubectl wait --for=condition=ready pod -l app=httpbin -n ratelimit-demo --timeout=60s
+   
    kubectl wait --for=condition=ready pod -l app=sleep -n ratelimit-demo --timeout=60s
-   ## Testing
+
 
 ### Test Rate Limiting
 
