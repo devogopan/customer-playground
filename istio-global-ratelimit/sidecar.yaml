@@ -1,0 +1,11 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Sidecar
+metadata:
+  name: default
+  namespace: ratelimit-demo
+spec:
+  egress:
+  - hosts:
+    - "./*"
+    - "istio-system/*"
+

@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: ratelimit-routes
+  namespace: ratelimit-demo
+spec:
+  configPatches:
+  - applyTo: VIRTUAL_HOST
+    match:
+      context: SIDECAR_OUTBOUND
+      routeConfiguration:
+        vhost:
+          name: "httpbin.ratelimit-demo.svc.cluster.local:80"
+          route:
+            action: ROUTE
+    patch:
+      operation: MERGE
+      value:
+        rate_limits:
+        - actions:
+          - remote_address: {}
+
