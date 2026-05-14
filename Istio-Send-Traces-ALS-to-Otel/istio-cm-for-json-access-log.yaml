@@ -1,0 +1,88 @@
+apiVersion: v1
+data:
+  mesh: |-
+    accessLogFile: /dev/stdout
+    accessLogEncoding: JSON
+    accessLogFormat: |
+      {
+        "authority": "%REQ(:AUTHORITY)%",
+        "bytes_received": "%BYTES_RECEIVED%",
+        "bytes_sent": "%BYTES_SENT%",
+        "connection_termination_details": "%CONNECTION_TERMINATION_DETAILS%",
+        "downstream_local_address": "%DOWNSTREAM_LOCAL_ADDRESS%",
+        "downstream_remote_address": "%DOWNSTREAM_REMOTE_ADDRESS%",
+        "duration": "%DURATION%",
+        "method": "%REQ(:METHOD)%",
+        "path": "%REQ(X-ENVOY-ORIGINAL-PATH?:PATH)%",
+        "protocol": "%PROTOCOL%",
+        "request_id": "%REQ(X-REQUEST-ID)%",
+        "requested_server_name": "%REQUESTED_SERVER_NAME%",
+        "response_code": "%RESPONSE_CODE%",
+        "response_code_details": "%RESPONSE_CODE_DETAILS%",
+        "response_flags": "%RESPONSE_FLAGS%",
+        "route_name": "%ROUTE_NAME%",
+        "start_time": "%START_TIME%",
+        "upstream_cluster": "%UPSTREAM_CLUSTER%",
+        "upstream_host": "%UPSTREAM_HOST%",
+        "upstream_local_address": "%UPSTREAM_LOCAL_ADDRESS%",
+        "upstream_service_time": "%RESP(X-ENVOY-UPSTREAM-SERVICE-TIME)%",
+        "upstream_transport_failure_reason": "%UPSTREAM_TRANSPORT_FAILURE_REASON%",
+        "user_agent": "%REQ(USER-AGENT)%",
+        "x_forwarded_for": "%REQ(X-FORWARDED-FOR)%",
+        "traceparent": "%REQ(TRACEPARENT)%",
+        "upstream_request_attempt_count": "%UPSTREAM_REQUEST_ATTEMPT_COUNT%",
+        "trace_id": "%TRACE_ID%"
+      }
+    defaultConfig:
+      discoveryAddress: istiod-1-24-2.istio-system.svc:15012
+      meshId: mesh1
+      tracing:
+        sampling: 100
+    defaultProviders:
+      metrics:
+      - prometheus
+    enableEnvoyAccessLogService: true
+    enablePrometheusMerge: true
+    enableTracing: true
+    extensionProviders:
+    - name: otel-tracing
+      opentelemetry:
+        port: 4317
+        resource_detectors:
+          environment: {}
+        service: opentelemetry-collector.observability.svc.cluster.local
+    - envoyOtelAls:
+        port: 4317
+        service: opentelemetry-collector.observability.svc.cluster.local
+      name: otel-als
+    - envoyExtAuthzHttp:
+        service: simple-auth-service.httpbin.svc.cluster.local
+        port: 80
+        pathPrefix: "/check"
+        includeRequestHeadersInCheck:
+        - "authorization"
+      name: my-simple-auth-provider
+    rootNamespace: istio-system
+    trustDomain: cluster.local
+  meshNetworks: 'networks: {}'
+kind: ConfigMap
+metadata:
+  annotations:
+    meta.helm.sh/release-name: istiod-1-24-2
+    meta.helm.sh/release-namespace: istio-system
+  creationTimestamp: "2025-10-07T01:28:28Z"
+  labels:
+    app.kubernetes.io/instance: istiod-1-24-2
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: istiod
+    app.kubernetes.io/part-of: istio
+    app.kubernetes.io/version: 1.24.2
+    helm.sh/chart: istiod-1.24.2
+    install.operator.istio.io/owning-resource: unknown
+    istio.io/rev: 1-24-2
+    operator.istio.io/component: Pilot
+    release: istiod-1-24-2
+  name: istio-1-24-2
+  namespace: istio-system
+  resourceVersion: "694714"
+  uid: 908aaf2d-044d-4b18-8c55-dc58f36a39d7
