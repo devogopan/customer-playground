@@ -30,3 +30,27 @@ You can note the reason unknown:1: for istiod full mentioned in point no. 3. in 
 ## To reproduce this.
 
 I am using Tetrate TSB. A service mesh solution based on Istio. So there can be slight differences but I can explain that when needed.
+
+1. There is a slow-server(**slow-server.yaml**) which can respond to a request with delay 
+```
+curl -s -o /dev/null -w "HTTP status: %{http_code}\nTotal time: %{time_total}s\n" http://slow-service.httpbin:8080/delay/75 &
+````
+This tells we app will respond with a delay of 75s
+
+2. A JWKS server(**jwks-server.yaml**) which can provide tokens for requestAuthentication. This has following endpoints 
+GET - /.well-known/jwks.json (for istiod to fetch jwks)
+GET - /status (will tell you which key is used)
+POST - /rotate - (will rotate keys defined in **jwks-data.yaml**)
+
+
+**jwks-data.yaml** defines two different jwks sets.
+
+3. A requestAuthentication (**reqauth.yaml**)
+
+4. Only for TSB, trafficSetting(**trafficSetting.yaml**) to disable retries on 503
+This need to be applied using "tctl"
+
+5. For Istio, a VS to disable retries (**vs.yaml**)
+
+
+

@@ -1,0 +1,117 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jwks-server-script
+  namespace: httpbin
+data:
+  server.py: |
+    import subprocess, sys
+    subprocess.run([sys.executable, "-m", "pip", "install", "cryptography", "-q"], check=True)
+
+    from cryptography.hazmat.primitives.asymmetric import rsa
+    from cryptography.hazmat.backends import default_backend
+    from http.server import HTTPServer, BaseHTTPRequestHandler
+    import base64, json
+
+    def int_to_b64url(n):
+        length = (n.bit_length() + 7) // 8
+        return base64.urlsafe_b64encode(n.to_bytes(length, 'big')).rstrip(b'=').decode()
+
+    def gen_jwk(kid):
+        key = rsa.generate_private_key(65537, 2048, default_backend())
+        pub = key.public_key().public_numbers()
+        return {"kty": "RSA", "kid": kid, "use": "sig", "alg": "RS256",
+                "e": int_to_b64url(pub.e), "n": int_to_b64url(pub.n)}
+
+    print("Generating RSA keys...", flush=True)
+    JWKS_A = {"keys": [gen_jwk("key-v1")]}
+    JWKS_B = {"keys": [gen_jwk("key-v2")]}
+    print(f"A: kid=key-v1 n_len={len(JWKS_A['keys'][0]['n'])}", flush=True)
+    print(f"B: kid=key-v2 n_len={len(JWKS_B['keys'][0]['n'])}", flush=True)
+
+    state = {"current": JWKS_A, "name": "A"}
+
+    class Handler(BaseHTTPRequestHandler):
+      def do_GET(self):
+        if self.path == "/.well-known/jwks.json":
+          body = json.dumps(state["current"]).encode()
+          self.send_response(200)
+          self.send_header("Content-Type", "application/json")
+          self.end_headers()
+          self.wfile.write(body)
+        elif self.path == "/status":
+          self.send_response(200)
+          self.end_headers()
+          kid = state["current"]["keys"][0]["kid"]
+          self.wfile.write(f"JWKS_{state['name']} kid={kid}".encode())
+        else:
+          self.send_response(404)
+          self.end_headers()
+
+      def do_POST(self):
+        if self.path == "/rotate":
+          if state["name"] == "A":
+            state["current"], state["name"] = JWKS_B, "B"
+          else:
+            state["current"], state["name"] = JWKS_A, "A"
+          kid = state["current"]["keys"][0]["kid"]
+          self.send_response(200)
+          self.end_headers()
+          self.wfile.write(f"rotated to JWKS_{state['name']} kid={kid}".encode())
+        else:
+          self.send_response(404)
+          self.end_headers()
+
+      def log_message(self, fmt, *args):
+        print(fmt % args, flush=True)
+
+    print("JWKS server on :8080", flush=True)
+    HTTPServer(("0.0.0.0", 8080), Handler).serve_forever()
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jwks-server
+  namespace: httpbin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jwks-server
+  template:
+    metadata:
+      labels:
+        app: jwks-server
+    spec:
+      containers:
+      - name: server
+        image: python:3.11-slim
+        command: ["python", "/app/server.py"]
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: script
+          mountPath: /app
+        - name: jwks-data
+          mountPath: /jwks-data
+      volumes:
+      - name: script
+        configMap:
+          name: jwks-server-script
+      - name: jwks-data
+        configMap:
+          name: jwks-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jwks-server
+  namespace: httpbin
+spec:
+  selector:
+    app: jwks-server
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+---

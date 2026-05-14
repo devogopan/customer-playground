@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: slow-service-no-retry
+  namespace: httpbin
+spec:
+  hosts:
+  - slow-service.httpbin.svc.cluster.local
+  http:
+  - route:
+    - destination:
+        host: slow-service.httpbin.svc.cluster.local
+        port:
+          number: 8080
+    retries:
+      attempts: 0
+---

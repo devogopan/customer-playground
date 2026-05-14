@@ -1,0 +1,16 @@
+apiVersion: traffic.tsb.tetrate.io/v2
+kind: TrafficSetting
+metadata:
+  name: slow-service-traffic
+  annotations:
+    tsb.tetrate.io/organization: tetrate
+    tsb.tetrate.io/tenant: tetrate
+    tsb.tetrate.io/workspace: workspace1
+    tsb.tetrate.io/trafficGroup: trafficgroup1
+spec:
+  resilience:
+    httpRetries:
+      attempts: 1
+      perTryTimeout: 300s
+      retryOn: "connect-failure"
+---

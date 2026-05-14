@@ -1,0 +1,9 @@
+apiVersion: v1
+data:
+  jwks-a.json: '{"keys":[{"kty":"RSA","kid":"key-v1","use":"sig","alg":"RS256","e":"AQAB","n":"xAE7eB6qugXyCAG3yhh7pkDkT65pHymX-P7KfIupjf59vsdo91bSP9C8H07pSAGQO1MV_xFj9VswgsCg4R6otmg5PV2He95lZdHtOcU5DXIg_pbhLdKXbi66GlVeK6ABZOUW3WYtnNHD-91gVuoeJT_DwtGGcp4ignkgXfkiEm4sw-4sfb4qdt5oLbyVmX3CliW7HUrXbtVUri2rWL2mcJleelbnB_uTO6efDKR_59MfPaduq2mvOT5hfUlxFQSW7l2lBqjFIkFNVbUMoV7GrGk5sPK3QAq-SEhkT-GrdGE6iJiTIEPuNNJBFWEjSFhXGkOasbfvdR1bqL0HCNQ"}]}'
+  jwks-b.json: '{"keys":[{"kty":"RSA","kid":"key-v2","use":"sig","alg":"RS256","e":"AQAB","n":"xAE7eB6qugXyCAG3yhh7pkDkT65pHymX-P7KfIupjf59vsdo91bSP9C8H07pSAGQO1MV_xFj9VswgsCg4R6otmg5PV2He95lZdHtOcU5DXIg_pbhLdKXbi66GlVeK6ABZOUW3WYtnNHD-91gVuoeJT_DwtGGcp4ignkgXfkiEm4sw-4sfb4qdt5oLbyVmX3CliW7HUrXbtVUri2rWL2mcJleelbnB_uTO6efDKR_59MfPaduq2mvOT5hfUlxFQSW7l2lBqjFIkFNVbUMoV7GrGk5sPK3QAq-SEhkT-GrdGE6iJiTIEPuNNJBFWEjSFhXGkOasbfvdR1bqL0HCNQ"}]}'
+kind: ConfigMap
+metadata:
+  name: jwks-data
+  namespace: httpbin
+---
