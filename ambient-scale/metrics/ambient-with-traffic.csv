@@ -1,0 +1,12 @@
+RPS,namespace,cpu,memory
+4,bookinfo-0,10m,32Mi
+20,bookinfo-0,33m,31Mi
+40,bookinfo-0,64m,33Mi
+60,bookinfo-0,89m,31Mi
+80,bookinfo-0,113m,33Mi
+100,bookinfo-0,135m,36Mi
+120,bookinfo-0,161m,36Mi
+140,bookinfo-0,205m,40Mi
+160,bookinfo-0,232m,38Mi
+180,bookinfo-0,255m,41Mi
+200,bookinfo-0,281m,42Mi
