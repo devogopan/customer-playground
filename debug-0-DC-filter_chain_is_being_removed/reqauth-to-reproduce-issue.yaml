@@ -4,9 +4,6 @@ metadata:
   name: jwt-auth
   namespace: httpbin
 spec:
-  selector:
-    matchLabels:
-      app: slow-service
   jwtRules:
   - issuer: "test-issuer"
     jwksUri: "http://jwks-server.httpbin.svc.cluster.local/.well-known/jwks.json"
