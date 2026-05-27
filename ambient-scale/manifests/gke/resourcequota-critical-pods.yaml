@@ -1,0 +1,32 @@
+# Required on GKE before istio-cni and ztunnel can schedule in istio-system.
+# See: https://istio.io/v1.28/docs/ambient/install/platform-prerequisites/#google-kubernetes-engine-gke
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: gcp-node-critical-pods
+  namespace: istio-system
+spec:
+  hard:
+    pods: "1000"
+  scopeSelector:
+    matchExpressions:
+      - operator: In
+        scopeName: PriorityClass
+        values:
+          - system-node-critical
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: gcp-cluster-critical-pods
+  namespace: istio-system
+spec:
+  hard:
+    pods: "1000"
+  scopeSelector:
+    matchExpressions:
+      - operator: In
+        scopeName: PriorityClass
+        values:
+          - system-cluster-critical
