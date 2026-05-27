@@ -1,3 +1,4 @@
+### this is for TEB and need tctl binary
 apiVersion: traffic.tsb.tetrate.io/v2
 kind: TrafficSetting
 metadata:
