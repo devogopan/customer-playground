@@ -25,11 +25,14 @@ Once a full push happened to a istio-proxy it has to remove the filters and buil
 Now what could be the trigger for this fullpush is below line I believe. 
 "Apr 28, 2026 @ 00:14:35.860","2026-04-28T04:14:35.859936Z info model Updated cached JWT public key from ""https://secure.abc-corp.com/ext/authtoken/JWKS"""
 
-You can note the reason unknown:1: for istiod full mentioned in point no. 3. in fact if a full push happens for Updated cached JWT public key the reason comes as unknown.  Actually, looking at the code, the push function is only called if the JWKS at the jwksUri secure.fhlmc.com/ext/authtoken/JWKS has changed. So could you answer me 
+You can note the reason unknown:1: for istiod full mentioned in point no. 3. in fact if a full push happens for Updated cached JWT public key the reason comes as unknown.  Actually, looking at the code, the push function is only called if the JWKS at the jwksUri secure.abc-corp.com/ext/authtoken/JWKS has changed. 
+
+Infact the requestauthentication was not needed for this application. This is backend application which did not need requestauthentication. Just by adding labelselector to requestauthentication this problem can be solved. 
 
 ## To reproduce this.
 
 I am using Tetrate TSB. A service mesh solution based on Istio. So there can be slight differences but I can explain that when needed.
+Since this is TSB, you will need to use TrafficSetting given in this folder. Else retries are by default enabled.
 
 1. There is a slow-server(**slow-server.yaml**) which can respond to a request with delay 
 ```
