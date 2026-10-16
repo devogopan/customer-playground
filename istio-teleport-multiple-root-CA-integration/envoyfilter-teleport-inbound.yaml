@@ -1,0 +1,29 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: teleport-inbound
+  namespace: app-teleport
+spec:
+  configPatches:
+    # Target the explicit port 8080 filter chain
+    - applyTo: FILTER_CHAIN
+      match:
+        context: SIDECAR_INBOUND
+        listener:
+          name: virtualInbound
+          filterChain:
+            name: "0.0.0.0_80"
+            transportProtocol: tls
+      patch:
+        operation: MERGE
+        value:
+          transport_socket:
+            name: envoy.transport_sockets.tls
+            typed_config:
+              "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext
+              common_tls_context:
+                combined_validation_context:
+                  validation_context_sds_secret_config:
+                    name: ALL
+---

@@ -1,0 +1,27 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: teleport-outbound
+  namespace: app-teleport
+spec:
+  configPatches:
+    # One entry per Citadel-side service:port. Never leave `cluster` unscoped:
+    - applyTo: CLUSTER
+      match:
+        context: SIDECAR_OUTBOUND
+        cluster:
+          service: httpbin.app-citadel.svc.cluster.local
+          portNumber: 8000
+      patch:
+        operation: MERGE
+        value:
+          transport_socket:
+            name: envoy.transport_sockets.tls          # selects the tlsMode
+            typed_config:
+              "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
+              common_tls_context:
+                combined_validation_context:
+                  validation_context_sds_secret_config:
+                    name: ALL
+---
