@@ -64,8 +64,3 @@ spec:
       serviceAccount: httpbin
       serviceAccountName: httpbin
       terminationGracePeriodSeconds: 30
-      volumes:
-      - csi:
-          driver: csi.spiffe.io
-          readOnly: true
-        name: workload-socket
