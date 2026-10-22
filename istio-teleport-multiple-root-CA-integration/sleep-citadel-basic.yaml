@@ -52,8 +52,4 @@ spec:
         secret:
           secretName: sleep-secret
           optional: true
-      - name: workload-socket
-        csi:
-          driver: csi.spiffe.io
-          readOnly: true
 ---
