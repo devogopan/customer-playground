@@ -1,0 +1,50 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: vs-route-validator-
+  namespace: infra-test-b
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 1800
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+      labels:
+        app: vs-route-validator
+    spec:
+      serviceAccountName: vs-route-validator
+      restartPolicy: Never
+      # Route hostnames are FQDNs; ndots:1 resolves them directly instead of
+      # first trying every cluster search domain (5 DNS queries per check).
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+      containers:
+        - name: validator
+          image: devogopan/validate-routes:v2.0.0-go
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+              name: metrics
+          env:
+            - name: SCRAPE_WAIT_SECONDS
+              value: "120"
+          resources:
+            requests:
+              cpu: "128m"
+              memory: "256Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+          args:
+            - "--concurrency"
+            - "100"
+#            - "--bypass-lb"
+#            - "--namespace"
+#            - "envoy-dpd-system-b,envoy-oi-system-p"
+#            - "--csv-extended"
+#            - "--fail-on-error"
+#            - "--debug"
