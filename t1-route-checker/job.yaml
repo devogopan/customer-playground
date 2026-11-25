@@ -24,7 +24,7 @@ spec:
             value: "1"
       containers:
         - name: validator
-          image: devogopan/validate-routes:v2.0.0-go
+          image: devogopan/validate-routes:v2.0.1-go
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
